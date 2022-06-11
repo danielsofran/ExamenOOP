@@ -1,0 +1,5 @@
+C:/Desktop/Examen/cmake-build-debug/CMakeFiles/Examen.dir
+C:/Desktop/Examen/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Desktop/Examen/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Desktop/Examen/cmake-build-debug/CMakeFiles/Examen_autogen_timestamp_deps.dir
+C:/Desktop/Examen/cmake-build-debug/CMakeFiles/Examen_autogen.dir

@@ -1,0 +1,17 @@
+        -:    0:Source:C:/Desktop/Examen/main.cpp
+        -:    0:Graph:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\main.cpp.gcno
+        -:    0:Data:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\main.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#include <QApplication>
+        -:    2:#include "tests.h"
+        -:    3:#include "UI/GUI.h"
+        -:    4:
+        1:    5:int main(int argc, char** argv) {
+        1:    6:    Test t;
+        1:    7:    QApplication a(argc, argv);
+        2:    8:    Repository r("repo.txt");
+        1:    9:    Service s(r);
+        1:   10:    GUI* gui = new GUI(s);
+        1:   11:    gui->show();
+        2:   12:    return a.exec();
+        1:   13:}

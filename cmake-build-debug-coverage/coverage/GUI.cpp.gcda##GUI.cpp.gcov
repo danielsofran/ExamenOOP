@@ -1,0 +1,95 @@
+        -:    0:Source:C:/Desktop/Examen/UI/GUI.cpp
+        -:    0:Graph:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\UI\GUI.cpp.gcno
+        -:    0:Data:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\UI\GUI.cpp.gcda
+        -:    0:Runs:1
+        -:    1://
+        -:    2:// Created by Daniel on 08.06.2022.
+        -:    3://
+        -:    4:
+        -:    5:#include "GUI.h"
+        -:    6:
+        1:    7:void GUI::initGUI() {
+        1:    8:    setLayout(lymain);
+        1:    9:    lymain->addWidget(table);
+        1:   10:    lymain->addLayout(lydr);
+        1:   11:    lydr->addLayout(form);
+        1:   12:    lydr->addWidget(btnAdd);
+        1:   13:    lydr->addWidget(btnModif);
+        1:   14:    lydr->addWidget(btnPlay);
+        1:   15:    lydr->addWidget(btnPlayView);
+        1:   16:    form->addRow("Dim", lineDim);
+        1:   17:    form->addRow("Table", lineTabla);
+        1:   18:    form->addRow("Jucator", lineJucator);
+        1:   19:    form->addRow("Stare", lineStare);
+        1:   20:}
+        -:   21:
+        1:   22:void GUI::reload() {
+        1:   23:    table->clearContents();
+        1:   24:    table->setRowCount(0);
+        1:   25:    auto v = service.getAll();
+        1:   26:    std::sort(v.begin(), v.end());
+        1:   27:    int rows = 0;
+        3:   28:    for(const auto& elem : v){
+        2:   29:        table->insertRow(rows);
+        2:   30:        auto cel1 = new QTableWidgetItem(QString::number(elem.getId()));
+        2:   31:        auto cel2 = new QTableWidgetItem(QString::number(elem.getDim()));
+        2:   32:        auto cel3 = new QTableWidgetItem(QString::fromStdString(elem.getTabla()));
+        2:   33:        auto cel4 = new QTableWidgetItem(QString::fromStdString(elem.getJucator()));
+        2:   34:        auto cel5 = new QTableWidgetItem(QString::fromStdString(elem.getStare()));
+        2:   35:        table->setItem(rows, 0, cel1);
+        2:   36:        table->setItem(rows, 1, cel2);
+        2:   37:        table->setItem(rows, 2, cel3);
+        2:   38:        table->setItem(rows, 3, cel4);
+        2:   39:        table->setItem(rows, 4, cel5);
+        2:   40:        ++rows;
+        -:   41:    }
+        1:   42:}
+        -:   43:
+        1:   44:void GUI::initConnect() {
+       1*:   45:    QObject::connect(table, &QTableWidget::cellClicked, [&](int row, int col){
+    #####:   46:        currentid = table->item(row, 0)->text().toInt();
+    #####:   47:    });
+       1*:   48:    QObject::connect(btnAdd, &QPushButton::clicked, [&](){
+    #####:   49:        string dim = lineDim->text().toStdString();
+    #####:   50:        string tabla = lineTabla->text().toStdString();
+    #####:   51:        string jucator = lineJucator->text().toStdString();
+        -:   52:        try{
+    #####:   53:            service.add(dim, tabla, jucator);
+    #####:   54:            reload();
+        -:   55:        }
+    =====:   56:        catch(MyException& me){MsgBox(me.what());}
+    #####:   57:    });
+       1*:   58:    QObject::connect(btnModif, &QPushButton::clicked, [&](){
+    #####:   59:        string dim = lineDim->text().toStdString();
+    #####:   60:        string tabla = lineTabla->text().toStdString();
+    #####:   61:        string jucator = lineJucator->text().toStdString();
+    #####:   62:        string stare = lineStare->text().toStdString();
+        -:   63:        try{
+    #####:   64:            service.modify(currentid, dim, tabla, jucator, stare);
+    #####:   65:            reload();
+        -:   66:        }
+    =====:   67:        catch(MyException& me){MsgBox(me.what());}
+    #####:   68:    });
+       1*:   69:    QObject::connect(btnPlayView, &QPushButton::clicked, [&](){
+        -:   70:         try{
+    #####:   71:             service.find(currentid);
+        -:   72:         }
+    =====:   73:         catch(MyException& me){
+    =====:   74:             MsgBox(me.what());
+    =====:   75:             return ;
+    =====:   76:         }
+    #####:   77:         GUITabla* guit = new GUITabla(service, currentid, false);
+    #####:   78:         guit->show();
+        -:   79:    });
+       1*:   80:    QObject::connect(btnPlay, &QPushButton::clicked, [&](){
+        -:   81:        try{
+    #####:   82:            service.find(currentid);
+        -:   83:        }
+    =====:   84:        catch(MyException& me){
+    =====:   85:            MsgBox(me.what());
+    =====:   86:            return ;
+    =====:   87:        }
+    #####:   88:        GUITabla* guit = new GUITabla(service, currentid, true);
+    #####:   89:        guit->show();
+        -:   90:    });
+        1:   91:}

@@ -1,0 +1,116 @@
+        -:    0:Source:C:/Desktop/Examen/tests.h
+        -:    0:Graph:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\main.cpp.gcno
+        -:    0:Data:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\main.cpp.gcda
+        -:    0:Runs:1
+        -:    1://
+        -:    2:// Created by Daniel on 08.06.2022.
+        -:    3://
+        -:    4:
+        -:    5:#ifndef EXAMEN_TESTS_H
+        -:    6:#define EXAMEN_TESTS_H
+        -:    7:
+        -:    8:#include "cassert"
+        -:    9:#include "filesystem"
+        -:   10:#include "repository.h"
+        -:   11:#include "service.h"
+        -:   12:
+        -:   13:class Test{
+        -:   14:private:
+        -:   15:    string file = "repo.txt";
+        -:   16:    string testfile = "repotest.txt";
+        -:   17:
+        1:   18:    void testDomain(){ // teste la Joc
+        2:   19:        Joc j(3, 3, "XXX-OXO-O-O", "O", "Terminat");
+       1*:   20:        assert(j.getTabla() == "XXX-OXO-O-O");
+       1*:   21:        assert(j.getId() == 3);
+       1*:   22:        assert(j.getStare() == "Terminat");
+       1*:   23:        assert(j.getJucator() == "O");
+        1:   24:        Joc j2(j);
+        1:   25:        j.setStare("In derulare");
+       1*:   26:        assert(j.getStare() == "In derulare");
+       1*:   27:        assert(!(j!=j));
+        1:   28:    }
+        -:   29:
+        1:   30:    void testRepo(){ // teste la repository
+        1:   31:        remove(testfile.c_str());
+        1:   32:        std::filesystem::copy_file(file, testfile);
+        1:   33:        Repository r(testfile);
+       1*:   34:        assert(r.size() == 2);
+       1*:   35:        assert(r.getAll()[0].getId() == 1);
+       1*:   36:        assert(r.getAll()[1].getPoz(0, 0) == "-");
+        -:   37://        std::cout<<r.getAll()[1].getPoz(2, 2);
+        -:   38://        std::cout<<r.getAll()[0].getTabla();
+       1*:   39:        assert(r.getAll()[1].getPoz(2, 2) == "X");
+       1*:   40:        assert(r.getAll()[1].getStare() == "In derulare");
+        2:   41:        Joc j(3, 3, "XXX-OXO-O-O", "O", "Terminat");
+        1:   42:        r.add(j);
+       1*:   43:        assert(r.size() == 3);
+       1*:   44:        assert(r.getAll()[2].getPoz(1, 0) == "-");
+        2:   45:        Joc j1(4, 3, "XXX-OXO-O-O", "O", "Terminat");
+        1:   46:        r.modify(j, j1);
+       1*:   47:        assert(r.getAll()[2].getId() == 4);
+        1:   48:    }
+        -:   49:
+        1:   50:    void testService(){ // teste la service
+        1:   51:        remove(testfile.c_str());
+        1:   52:        std::filesystem::copy_file(file, testfile);
+        1:   53:        Repository r(testfile);
+        1:   54:        Service s(r);
+       1*:   55:        assert(s.getAll().size() == 2);
+        1:   56:        s.add("3", "XXXOOO---", "X");
+       1*:   57:        assert(s.getAll().size() == 3);
+       1*:   58:        assert(s.getAll()[2].getId() == 3);
+       1*:   59:        assert(s.getAll()[2].getStare() == "Neinceput");
+        1:   60:        s.modify(3, "4", "--XXOOOOXXXXOOOO", "O", "In derulare");
+       1*:   61:        assert(s.getAll()[2].getDim() == 4);
+        1:   62:        s.modifyPoz(3, 0, 0, "X");
+        1:   63:        s.modifyPoz(3, 0, 1, "O");
+       1*:   64:        assert(s.getAll()[2].getPoz(0, 0) == "X");
+        -:   65:        try{
+       7*:   66:            s.add("6", "XXXOOO---", "X"); assert(false);
+        -:   67:        }
+        1:   68:        catch(ServiceException&){}
+        -:   69:        try{
+       7*:   70:            s.add("3", "XXXOOO-X--", "X"); assert(false);
+        -:   71:        }
+        1:   72:        catch(ServiceException&){}
+        -:   73:        try{
+       7*:   74:            s.add("we", "XXXOOO---", "X"); assert(false);
+        -:   75:        }
+        1:   76:        catch(ServiceException&){}
+        -:   77:        try{
+       7*:   78:            s.add("3", "XXXOoO---", "X"); assert(false);
+        -:   79:        }
+        1:   80:        catch(ServiceException&){}
+        -:   81:        try{
+       7*:   82:            s.add("3", "XXXOOO---", "-"); assert(false);
+        -:   83:        }
+        1:   84:        catch(ServiceException&){}
+        -:   85:        try{
+       9*:   86:            s.modify(3, "3", "XXXOOO---", "X", "Inceput"); assert(false);
+        -:   87:        }
+        1:   88:        catch(ServiceException&){}
+        -:   89:        try{
+       3*:   90:            s.modifyPoz(3, 3, 3, "X"); assert(false);
+        -:   91:        }
+        1:   92:        catch(ServiceException&){}
+        -:   93:        try{
+       3*:   94:            s.modifyPoz(3, 3, 3, "u"); assert(false);
+        -:   95:        }
+        1:   96:        catch(ServiceException&){}
+        1:   97:        s.find(1);
+        -:   98:        try{
+       1*:   99:            s.find(0); assert(false);
+        -:  100:        }
+        1:  101:        catch(ServiceException&){}
+        1:  102:    }
+        -:  103:
+        -:  104:public:
+        1:  105:    Test(){ // testeaza tot
+        1:  106:        testDomain();
+        1:  107:        testRepo();
+        1:  108:        testService();
+        1:  109:    }
+        -:  110:};
+        -:  111:
+        -:  112:#endif //EXAMEN_TESTS_H

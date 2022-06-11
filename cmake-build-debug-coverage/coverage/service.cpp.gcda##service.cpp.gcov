@@ -1,0 +1,83 @@
+        -:    0:Source:C:/Desktop/Examen/service.cpp
+        -:    0:Graph:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\service.cpp.gcno
+        -:    0:Data:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\service.cpp.gcda
+        -:    0:Runs:1
+        -:    1://
+        -:    2:// Created by Daniel on 08.06.2022.
+        -:    3://
+        -:    4:
+        -:    5:#include "service.h"
+        -:    6:
+        2:    7:Service::Service(Repository &repo) : r(repo) {
+        2:    8:    idcurent = 0;
+        6:    9:    for (const Joc &j: r.getAll()) {
+        4:   10:        if (j.getId() > idcurent)
+        4:   11:            idcurent = j.getId();
+        -:   12:    }
+        2:   13:    idcurent++;
+        2:   14:}
+        8:   15:void Service::valid(const string &dim, const string &tabla, const string &jucator) {
+       15:   16:    for(char ch : dim)
+        8:   17:        if(!std::isdigit(ch))
+        1:   18:            throw ServiceException("Dimensiune invalida");
+       7*:   19:    if(dim.empty()) throw ServiceException("Dimensiune invalida");
+        7:   20:    int d = stoi(dim);
+        7:   21:    if(d<3 || d>5) throw ServiceException("Dimensiune invalida");
+        6:   22:    if(tabla.length() != d*d) throw ServiceException("Tabla invalida");
+       52:   23:    for(char ch : tabla)
+       48:   24:        if(ch != 'X' && ch!='O' && ch != '-')
+        1:   25:            throw ServiceException("Tabla invalida");
+        4:   26:    if(jucator != "X" && jucator!="O")
+        1:   27:        throw ServiceException("Jucator invalid");
+        3:   28:}
+        -:   29:
+        2:   30:void Service::valid(const string &stare) {
+        2:   31:    if(stare != "Neinceput" && stare != "In derulare" && stare != "Terminat")
+        1:   32:        throw ServiceException("Stare invalda");
+        1:   33:}
+        -:   34:
+        6:   35:void Service::add(cstring dim, cstring tabla, cstring jucator) {
+        6:   36:    valid(dim, tabla, jucator);
+        2:   37:    Joc j(idcurent, std::stoi(dim), tabla, jucator, "Neinceput");
+        1:   38:    r.add(j);
+        1:   39:    idcurent++;
+        1:   40:}
+        -:   41:
+        2:   42:void Service::modify(int id, const string &dim, const string &tabla, const string &jucator, cstring stare) {
+        4:   43:    Joc j1(id, 0, "", "", "");
+        2:   44:    valid(dim, tabla, jucator);
+        2:   45:    valid(stare);
+        1:   46:    Joc j(id, std::stoi(dim), tabla, jucator, stare);
+        1:   47:    r.modify(j1, j);
+        2:   48:}
+        -:   49:
+        4:   50:void Service::modifyPoz(int id, int row, int col, string val) {
+        8:   51:    Joc j1(id, 0, "", "", "");
+        4:   52:    auto it = std::find(r.getAll().begin(), r.getAll().end(), j1);
+        4:   53:    Joc j2 = *it;
+       4*:   54:    if (row < 0 || row >= j2.getDim()) throw ServiceException("Linie invalida");
+       4*:   55:    if (col < 0 || col >= j2.getDim()) throw ServiceException("Coloana invalida");
+        4:   56:    if(j2.getPoz(row, col) != "-") throw ServiceException("Pozitie ocupata");
+        2:   57:    j2.setPoz(row, col, val);
+        2:   58:    if(val=="X") j2.setJucator("O");
+        1:   59:    else j2.setJucator("X");
+        2:   60:    bool gasit = false;
+        2:   61:    if(j2.getTabla().find('-') == string::npos)
+        1:   62:        gasit = true;
+        2:   63:    if(!gasit) j2.setStare("In derulare");
+        1:   64:    else j2.setStare("Terminat");
+        2:   65:    r.modify(j1, j2);
+        6:   66:}
+        -:   67:
+        7:   68:const vector<Joc> &Service::getAll() {
+        7:   69:    return r.getAll();
+        -:   70:}
+        -:   71:
+        2:   72:const Joc &Service::find(int id) const {
+        5:   73:    for(const auto& j : r.getAll())
+        4:   74:        if(j.getId() == id)
+        1:   75:            return j;
+        1:   76:    throw ServiceException("Negasit");
+        -:   77:}
+        -:   78:
+        -:   79:

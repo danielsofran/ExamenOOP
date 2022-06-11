@@ -1,0 +1,60 @@
+        -:    0:Source:C:/Desktop/Examen/UI/GUITabla.h
+        -:    0:Graph:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\UI\GUI.cpp.gcno
+        -:    0:Data:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\UI\GUI.cpp.gcda
+        -:    0:Runs:1
+        -:    1://
+        -:    2:// Created by Daniel on 08.06.2022.
+        -:    3://
+        -:    4:
+        -:    5:#ifndef EXAMEN_GUITABLA_H
+        -:    6:#define EXAMEN_GUITABLA_H
+        -:    7:
+        -:    8:#include "service.h"
+        -:    9:#include "includesQT.h"
+        -:   10:
+        -:   11:#define MsgBox(txt) QMessageBox::warning(NULL, "Atentie", txt)
+        -:   12:
+        -:   13:class GUITabla : public QWidget{
+        -:   14:private:
+        -:   15:    Service& service;
+        -:   16:    int dim;
+        -:   17:    int id;
+        -:   18:    bool playable;
+        -:   19:    QPushButton*** mat;
+        -:   20:
+        -:   21:    QGridLayout* grid = new QGridLayout;
+        -:   22:
+        -:   23:    void initGUI(); // initializare componente + semnale, daca e playable
+        -:   24:    void reload(); // reincarc datele
+        -:   25:
+        -:   26:public:
+    #####:   27:    GUITabla(Service& s, int id, bool play) : service(s), id(id), playable(play){
+    #####:   28:        dim = s.find(id).getDim();
+    #####:   29:        mat = new QPushButton**[dim];
+    #####:   30:        for(int i=0;i<dim;++i)
+    #####:   31:            mat[i] = new QPushButton*[dim];
+    #####:   32:        initGUI();
+    #####:   33:    }
+    #####:   34:    ~GUITabla(){
+    #####:   35:        for(int i=0;i<dim;++i)
+    #####:   36:            delete mat[i];
+    #####:   37:        delete mat;
+    #####:   38:    }
+------------------
+_ZN8GUITablaD0Ev:
+    #####:   34:    ~GUITabla(){
+        -:   35:        for(int i=0;i<dim;++i)
+        -:   36:            delete mat[i];
+        -:   37:        delete mat;
+    #####:   38:    }
+------------------
+_ZN8GUITablaD1Ev:
+    #####:   34:    ~GUITabla(){
+    #####:   35:        for(int i=0;i<dim;++i)
+    #####:   36:            delete mat[i];
+    #####:   37:        delete mat;
+    #####:   38:    }
+------------------
+        -:   39:};
+        -:   40:
+        -:   41:#endif //EXAMEN_GUITABLA_H

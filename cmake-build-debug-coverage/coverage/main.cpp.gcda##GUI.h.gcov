@@ -1,0 +1,51 @@
+        -:    0:Source:C:/Desktop/Examen/UI/GUI.h
+        -:    0:Graph:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\main.cpp.gcno
+        -:    0:Data:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\main.cpp.gcda
+        -:    0:Runs:1
+        -:    1://
+        -:    2:// Created by Daniel on 08.06.2022.
+        -:    3://
+        -:    4:
+        -:    5:#ifndef EXAMEN_GUI_H
+        -:    6:#define EXAMEN_GUI_H
+        -:    7:
+        -:    8:#include "service.h"
+        -:    9:#include "includesQT.h"
+        -:   10:#include "GUITabla.h"
+        -:   11:
+        -:   12:#define MsgBox(txt) QMessageBox::warning(NULL, "Atentie", txt)
+        -:   13:
+        -:   14:class GUI : public QWidget{
+        -:   15:private:
+        -:   16:    Service& service;
+        -:   17:    int currentid;
+        -:   18:
+        -:   19:    QTableWidget* table = new QTableWidget(10, 5);
+        -:   20:    QHBoxLayout* lymain = new QHBoxLayout;
+        -:   21:    QVBoxLayout* lydr = new QVBoxLayout;
+        -:   22:
+        -:   23:    QFormLayout* form = new QFormLayout;
+        -:   24:
+        -:   25:    QPushButton* btnAdd = new QPushButton("Add");
+        -:   26:    QPushButton* btnModif = new QPushButton("Modify");
+        -:   27:    QPushButton* btnPlay = new QPushButton("Play");
+        -:   28:    QPushButton* btnPlayView = new QPushButton("View Table");
+        -:   29:
+        -:   30:    QLineEdit* lineDim = new QLineEdit;
+        -:   31:    QLineEdit* lineTabla = new QLineEdit;
+        -:   32:    QLineEdit* lineJucator = new QLineEdit;
+        -:   33:    QLineEdit* lineStare= new QLineEdit;
+        -:   34:
+        -:   35:    void initGUI(); // adaug componentele
+        -:   36:    void reload(); // incarc din fisier
+        -:   37:    void initConnect(); // conectez semnalele la sloturi
+        -:   38:
+        -:   39:public:
+        1:   40:    GUI(Service& s) : service(s){ // constructor
+        1:   41:        initGUI();
+        1:   42:        initConnect();
+        1:   43:        reload();
+        1:   44:    }
+        -:   45:};
+        -:   46:
+        -:   47:#endif //EXAMEN_GUI_H

@@ -1,0 +1,47 @@
+        -:    0:Source:C:/Desktop/Examen/UI/GUITabla.cpp
+        -:    0:Graph:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\UI\GUITabla.cpp.gcno
+        -:    0:Data:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\UI\GUITabla.cpp.gcda
+        -:    0:Runs:1
+        -:    1://
+        -:    2:// Created by Daniel on 08.06.2022.
+        -:    3://
+        -:    4:
+        -:    5:#include "GUITabla.h"
+        -:    6:
+    #####:    7:void GUITabla::initGUI() {
+    #####:    8:    setLayout(grid);
+        -:    9:
+    #####:   10:    for(int i=0;i<dim;++i)
+    #####:   11:        for(int j=0;j<dim;++j)
+        -:   12:        {
+    #####:   13:            string str = service.find(id).getPoz(i, j);
+    #####:   14:            if(str == "-") str = " ";
+    #####:   15:            QPushButton* btn = new QPushButton(str.c_str());
+    #####:   16:            if(playable)
+        -:   17:            {
+    #####:   18:                QObject::connect(btn, &QPushButton::clicked, [&,i,j](){
+    #####:   19:                     string player = service.find(id).getJucator();
+        -:   20:                     try{
+    #####:   21:                         service.modifyPoz(id, i, j, player);
+        -:   22:                         //btn->setText(player.c_str());
+    #####:   23:                         reload();
+        -:   24:                     }
+    =====:   25:                     catch(MyException& me) {MsgBox(me.what());}
+    #####:   26:                });
+        -:   27:            }
+    #####:   28:            grid->addWidget(btn, i, j);
+    #####:   29:            mat[i][j] = btn;
+    #####:   30:        }
+    #####:   31:}
+        -:   32:
+    #####:   33:void GUITabla::reload() {
+    #####:   34:    for(int i=0;i<dim;++i)
+    #####:   35:        for(int j=0;j<dim;++j)
+        -:   36:        {
+    #####:   37:            string str = service.find(id).getPoz(i, j);
+    #####:   38:            if(str == "-") str = " ";
+    #####:   39:            mat[i][j]->setText(str.c_str());
+    #####:   40:        }
+    #####:   41:}
+        -:   42:
+        -:   43:

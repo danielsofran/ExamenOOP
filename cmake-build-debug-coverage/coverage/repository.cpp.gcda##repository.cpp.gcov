@@ -1,0 +1,61 @@
+        -:    0:Source:C:/Desktop/Examen/repository.cpp
+        -:    0:Graph:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\repository.cpp.gcno
+        -:    0:Data:C:\Desktop\Examen\cmake-build-debug-coverage\CMakeFiles\Examen.dir\repository.cpp.gcda
+        -:    0:Runs:1
+        -:    1://
+        -:    2:// Created by Daniel on 08.06.2022.
+        -:    3://
+        -:    4:
+        -:    5:#include "repository.h"
+        -:    6:
+        3:    7:Repository::Repository(const string &file) : file(file) {
+        3:    8:    load();
+        3:    9:    save();
+        3:   10:}
+        -:   11:
+       25:   12:const vector<Joc> &Repository::getAll() {
+       25:   13:    load();
+       25:   14:    return jocuri;
+        -:   15:}
+        -:   16:
+       36:   17:void Repository::load() {
+       36:   18:    std::ifstream fin(file);
+      36*:   19:    if(!fin.is_open()) throw RepoException("eroare la deschidere fisier citire");
+       36:   20:    jocuri.clear();
+       72:   21:    Joc joc(0, 0, "", "", "");
+      130:   22:    while(fin>>joc)
+       94:   23:        jocuri.push_back(joc);
+       36:   24:    fin.close();
+       36:   25:}
+        -:   26:
+        9:   27:void Repository::save() {
+        9:   28:    std::ofstream fout(file);
+       9*:   29:    if(!fout.is_open()) throw RepoException("eroare la deschidere fisier scriere");
+       33:   30:    for(const auto& elem : jocuri)
+       24:   31:        fout<<elem<<'\n';
+        9:   32:    fout.close();
+        9:   33:}
+        -:   34:
+        2:   35:int Repository::size() {
+        2:   36:    load();
+        2:   37:    return jocuri.size();
+        -:   38:}
+        -:   39:
+        2:   40:void Repository::add(const Joc &joc) {
+        2:   41:    load();
+        2:   42:    auto it=std::find(jocuri.begin(), jocuri.end(), joc);
+       2*:   43:    if(it != jocuri.end()) throw RepoException("duplicate");
+        2:   44:    jocuri.push_back(joc);
+        2:   45:    save();
+        2:   46:}
+        -:   47:
+        4:   48:void Repository::modify(const Joc &joc1, const Joc &Joc2) {
+        4:   49:    load();
+        4:   50:    auto it=std::find(jocuri.begin(), jocuri.end(), joc1);
+       4*:   51:    if(it == jocuri.end()) throw RepoException("inexistent");
+        4:   52:    *it = Joc2;
+        4:   53:    save();
+        4:   54:}
+        -:   55:
+        -:   56:
+        -:   57:
